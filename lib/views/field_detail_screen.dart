@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../controllers/fields_controller.dart';
 import '../core/theme.dart';
 import 'booking_form_screen.dart';
+import 'field_calendar_screen.dart';
 
 class FieldDetailScreen extends StatelessWidget {
   const FieldDetailScreen({super.key});
@@ -135,6 +136,21 @@ class FieldDetailScreen extends StatelessWidget {
                 ),
               ),
               actions: [
+                Container(
+                  margin: EdgeInsets.all(8.w),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: IconButton(
+                    onPressed: () => Get.to(() => const FieldCalendarScreen()),
+                    icon: Icon(
+                      Icons.calendar_month,
+                      color: AppTheme.onBackground,
+                      size: 20.sp,
+                    ),
+                  ),
+                ),
                 Container(
                   margin: EdgeInsets.all(8.w),
                   decoration: BoxDecoration(

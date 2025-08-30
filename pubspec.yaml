@@ -42,6 +42,9 @@ dependencies:
   # Date and time handling
   intl: ^0.18.1
   
+  # Calendar
+  table_calendar: ^3.0.9
+  
   # Icons
   flutter_svg: ^2.0.7
 

@@ -61,53 +61,64 @@ class _RegisterScreenState extends State<RegisterScreen>
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(24.w),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header
-                _buildHeader(),
-                
-                SizedBox(height: 32.h),
-                
-                // Registration method tabs
-                _buildRegistrationTabs(),
-                
-                SizedBox(height: 24.h),
-                
-                // Registration form
-                _buildRegistrationForm(),
-                
-                SizedBox(height: 20.h),
-                
-                // Terms and conditions
-                _buildTermsAgreement(),
-                
-                SizedBox(height: 24.h),
-                
-                // Register button
-                _buildRegisterButton(),
-                
-                SizedBox(height: 24.h),
-                
-                // Divider
-                _buildDivider(),
-                
-                SizedBox(height: 24.h),
-                
-                // Social registration
-                _buildSocialRegistration(),
-                
-                SizedBox(height: 32.h),
-                
-                // Login link
-                _buildLoginLink(),
-              ],
-            ),
-          ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: EdgeInsets.all(24.w),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - 48.w,
+                ),
+                child: IntrinsicHeight(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Header
+                        _buildHeader(),
+
+                        SizedBox(height: 20.h),
+
+                        // Registration method tabs
+                        _buildRegistrationTabs(),
+
+                        SizedBox(height: 16.h),
+
+                        // Registration form
+                        _buildRegistrationForm(),
+
+                        SizedBox(height: 12.h),
+
+                        // Terms and conditions
+                        _buildTermsAgreement(),
+
+                        SizedBox(height: 16.h),
+
+                        // Register button
+                        _buildRegisterButton(),
+
+                        SizedBox(height: 16.h),
+
+                        // Divider
+                        _buildDivider(),
+
+                        SizedBox(height: 16.h),
+
+                        // Social registration
+                        _buildSocialRegistration(),
+
+                        SizedBox(height: 20.h),
+
+                        // Login link
+                        _buildLoginLink(),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -125,7 +136,7 @@ class _RegisterScreenState extends State<RegisterScreen>
             color: AppTheme.onBackground,
           ),
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 4.h),
         Text(
           'Join us and start booking your favorite sports fields!',
           style: TextStyle(
@@ -189,7 +200,7 @@ class _RegisterScreenState extends State<RegisterScreen>
 
   Widget _buildRegistrationForm() {
     return SizedBox(
-      height: 320.h,
+      height: 380.h,
       child: TabBarView(
         controller: _tabController,
         children: [
@@ -204,11 +215,11 @@ class _RegisterScreenState extends State<RegisterScreen>
     return Column(
       children: [
         _buildNameField(),
-        SizedBox(height: 16.h),
+        SizedBox(height: 4.h),
         _buildEmailField(),
-        SizedBox(height: 16.h),
+        SizedBox(height: 4.h),
         _buildPasswordField(),
-        SizedBox(height: 16.h),
+        SizedBox(height: 4.h),
         _buildConfirmPasswordField(),
       ],
     );
@@ -218,11 +229,11 @@ class _RegisterScreenState extends State<RegisterScreen>
     return Column(
       children: [
         _buildNameField(),
-        SizedBox(height: 16.h),
+        SizedBox(height: 4.h),
         _buildPhoneField(),
-        SizedBox(height: 16.h),
+        SizedBox(height: 4.h),
         _buildPasswordField(),
-        SizedBox(height: 16.h),
+        SizedBox(height: 4.h),
         _buildConfirmPasswordField(),
       ],
     );
@@ -240,7 +251,7 @@ class _RegisterScreenState extends State<RegisterScreen>
             color: AppTheme.onBackground,
           ),
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 4.h),
         TextFormField(
           controller: _nameController,
           decoration: InputDecoration(
@@ -277,7 +288,7 @@ class _RegisterScreenState extends State<RegisterScreen>
             color: AppTheme.onBackground,
           ),
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 4.h),
         TextFormField(
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
@@ -315,7 +326,7 @@ class _RegisterScreenState extends State<RegisterScreen>
             color: AppTheme.onBackground,
           ),
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 4.h),
         TextFormField(
           controller: _phoneController,
           keyboardType: TextInputType.phone,
@@ -359,7 +370,7 @@ class _RegisterScreenState extends State<RegisterScreen>
             color: AppTheme.onBackground,
           ),
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 4.h),
         TextFormField(
           controller: _passwordController,
           obscureText: _obscurePassword,
@@ -412,7 +423,7 @@ class _RegisterScreenState extends State<RegisterScreen>
             color: AppTheme.onBackground,
           ),
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 4.h),
         TextFormField(
           controller: _confirmPasswordController,
           obscureText: _obscureConfirmPassword,
@@ -430,7 +441,9 @@ class _RegisterScreenState extends State<RegisterScreen>
                 });
               },
               icon: Icon(
-                _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+                _obscureConfirmPassword
+                    ? Icons.visibility
+                    : Icons.visibility_off,
                 color: AppTheme.onBackground.withOpacity(0.5),
                 size: 20.sp,
               ),
@@ -521,16 +534,16 @@ class _RegisterScreenState extends State<RegisterScreen>
       child: Obx(() {
         final authController = Get.find<AuthController>();
         return ElevatedButton(
-          onPressed: (_agreeToTerms && !authController.isLoading) 
-              ? _handleRegister 
+          onPressed: (_agreeToTerms && !authController.isLoading)
+              ? _handleRegister
               : null,
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(vertical: 16.h),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.r),
             ),
-            backgroundColor: _agreeToTerms 
-                ? AppTheme.primaryColor 
+            backgroundColor: _agreeToTerms
+                ? AppTheme.primaryColor
                 : AppTheme.onBackground.withOpacity(0.3),
           ),
           child: authController.isLoading
@@ -539,7 +552,8 @@ class _RegisterScreenState extends State<RegisterScreen>
                   height: 20.w,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(AppTheme.onPrimary),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(AppTheme.onPrimary),
                   ),
                 )
               : Text(
@@ -604,7 +618,8 @@ class _RegisterScreenState extends State<RegisterScreen>
     );
   }
 
-  Widget _buildSocialButton(String text, String icon, Color color, VoidCallback onPressed) {
+  Widget _buildSocialButton(
+      String text, String icon, Color color, VoidCallback onPressed) {
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton(
@@ -687,10 +702,10 @@ class _RegisterScreenState extends State<RegisterScreen>
   void _handleRegister() async {
     if (_formKey.currentState!.validate() && _agreeToTerms) {
       final authController = Get.find<AuthController>();
-      
+
       final isEmailMode = _tabController.index == 0;
       bool success = false;
-      
+
       if (isEmailMode) {
         // Email registration
         success = await authController.register(
@@ -707,7 +722,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           password: _passwordController.text,
         );
       }
-      
+
       if (success) {
         Get.offAllNamed('/main');
       }
@@ -727,7 +742,7 @@ class _RegisterScreenState extends State<RegisterScreen>
   void _handleSocialRegister(String provider) async {
     final authController = Get.find<AuthController>();
     final success = await authController.socialLogin(provider);
-    
+
     if (success) {
       Get.offAllNamed('/main');
     }
@@ -759,7 +774,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                   color: AppTheme.onBackground,
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 4.h),
               Text(
                 'By using SportBook, you agree to these terms and conditions.',
                 style: TextStyle(
@@ -776,7 +791,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                   color: AppTheme.onBackground,
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 4.h),
               Text(
                 'All bookings are subject to field availability. Cancellations must be made at least 2 hours before the scheduled time.',
                 style: TextStyle(
@@ -793,7 +808,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                   color: AppTheme.onBackground,
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 4.h),
               Text(
                 'Payment is required at the time of booking. Refunds are available for cancellations made within the allowed timeframe.',
                 style: TextStyle(
@@ -840,7 +855,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                   color: AppTheme.onBackground,
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 4.h),
               Text(
                 'We collect only necessary information to provide our booking services.',
                 style: TextStyle(
@@ -857,7 +872,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                   color: AppTheme.onBackground,
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 4.h),
               Text(
                 'Your personal information is encrypted and stored securely. We never share your data with third parties without consent.',
                 style: TextStyle(
@@ -886,14 +901,14 @@ class _PhoneNumberFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     final text = newValue.text;
-    
+
     if (text.isEmpty) {
       return newValue;
     }
 
     String formatted = '';
     final digits = text.replaceAll(RegExp(r'[^\d]'), '');
-    
+
     if (digits.startsWith('0')) {
       formatted = '+62 ${digits.substring(1)}';
     } else if (digits.startsWith('62')) {
@@ -906,13 +921,15 @@ class _PhoneNumberFormatter extends TextInputFormatter {
     if (formatted.length > 4) {
       final countryCode = formatted.substring(0, 3);
       final remainingDigits = formatted.substring(3).replaceAll(' ', '');
-      
+
       if (remainingDigits.length <= 3) {
         formatted = '$countryCode $remainingDigits';
       } else if (remainingDigits.length <= 7) {
-        formatted = '$countryCode ${remainingDigits.substring(0, 3)} ${remainingDigits.substring(3)}';
+        formatted =
+            '$countryCode ${remainingDigits.substring(0, 3)} ${remainingDigits.substring(3)}';
       } else {
-        formatted = '$countryCode ${remainingDigits.substring(0, 3)} ${remainingDigits.substring(3, 7)} ${remainingDigits.substring(7)}';
+        formatted =
+            '$countryCode ${remainingDigits.substring(0, 3)} ${remainingDigits.substring(3, 7)} ${remainingDigits.substring(7)}';
       }
     }
 

@@ -71,6 +71,8 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       backgroundColor: AppTheme.primaryColor,
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -82,124 +84,109 @@ class _SplashScreenState extends State<SplashScreen>
             ],
           ),
         ),
-        child: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight,
-                  ),
-                  child: IntrinsicHeight(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Spacer(),
+            
+            // Logo and branding
+            AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                return FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: ScaleTransition(
+                    scale: _scaleAnimation,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Spacer(),
-                        
-                        // Logo and branding
-                        AnimatedBuilder(
-                          animation: _animationController,
-                          builder: (context, child) {
-                            return FadeTransition(
-                              opacity: _fadeAnimation,
-                              child: ScaleTransition(
-                                scale: _scaleAnimation,
-                                child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      // App Icon
-                                      Container(
-                                        width: 120.w,
-                                        height: 120.w,
-                                        decoration: BoxDecoration(
-                                          color: AppTheme.onPrimary,
-                                          borderRadius: BorderRadius.circular(30.r),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black.withOpacity(0.2),
-                                              blurRadius: 20,
-                                              offset: const Offset(0, 10),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Icon(
-                                          Icons.sports_soccer,
-                                          size: 60.sp,
-                                          color: AppTheme.primaryColor,
-                                        ),
-                                      ),
-                                      
-                                      SizedBox(height: 24.h),
-                                      
-                                      // App Name
-                                      Text(
-                                        'SportBook',
-                                        style: TextStyle(
-                                          fontSize: 36.sp,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppTheme.onPrimary,
-                                          letterSpacing: 1.2,
-                                        ),
-                                      ),
-                                      
-                                      SizedBox(height: 8.h),
-                                      
-                                      // Tagline
-                                      Text(
-                                        'Book Your Perfect Sports Field',
-                                        style: TextStyle(
-                                          fontSize: 16.sp,
-                                          color: AppTheme.onPrimary.withOpacity(0.9),
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                ),
+                        // App Icon
+                        Container(
+                          width: 120.w,
+                          height: 120.w,
+                          decoration: BoxDecoration(
+                            color: AppTheme.onPrimary,
+                            borderRadius: BorderRadius.circular(30.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 20,
+                                offset: const Offset(0, 10),
                               ),
-                            );
-                          },
-                        ),
-                        
-                        const Spacer(),
-                        
-                        // Loading indicator
-                        FadeTransition(
-                          opacity: _fadeAnimation,
-                          child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(
-                                  width: 40.w,
-                                  height: 40.w,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 3,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      AppTheme.onPrimary.withOpacity(0.8),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 16.h),
-                                Text(
-                                  'Loading...',
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    color: AppTheme.onPrimary.withOpacity(0.8),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.sports_soccer,
+                            size: 60.sp,
+                            color: AppTheme.primaryColor,
                           ),
                         ),
                         
-                        SizedBox(height: 20.h),
+                        SizedBox(height: 24.h),
+                        
+                        // App Name
+                        Text(
+                          'SportBook',
+                          style: TextStyle(
+                            fontSize: 36.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.onPrimary,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        
+                        SizedBox(height: 8.h),
+                        
+                        // Tagline
+                        Text(
+                          'Book Your Perfect Sports Field',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: AppTheme.onPrimary.withOpacity(0.9),
+                            fontWeight: FontWeight.w400,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ],
                     ),
                   ),
-                ),
-              );
-            },
-          ),
+                );
+              },
+            ),
+            
+            const Spacer(),
+            
+            // Loading indicator
+            FadeTransition(
+              opacity: _fadeAnimation,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: 40.w,
+                    height: 40.w,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppTheme.onPrimary.withOpacity(0.8),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+                  Text(
+                    'Loading...',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: AppTheme.onPrimary.withOpacity(0.8),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            SizedBox(height: 50.h),
+          ],
         ),
       ),
     );

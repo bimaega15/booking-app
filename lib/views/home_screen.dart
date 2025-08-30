@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       _buildHeader(),
                       SizedBox(height: 24.h),
-                      _buildSearchBar(),
+                      _buildSearchBar(context),
                       SizedBox(height: 24.h),
                       _buildQuickStats(bookingController),
                       SizedBox(height: 24.h),
@@ -101,7 +101,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: AppTheme.surfaceColor,
@@ -122,17 +122,20 @@ class HomeScreen extends StatelessWidget {
             color: AppTheme.onBackground.withOpacity(0.5),
             size: 20.sp,
           ),
-          suffixIcon: Container(
-            margin: EdgeInsets.all(8.w),
-            padding: EdgeInsets.all(8.w),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryColor,
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-            child: Icon(
-              Icons.tune,
-              color: AppTheme.onPrimary,
-              size: 16.sp,
+          suffixIcon: GestureDetector(
+            onTap: () => _showFilterBottomSheet(context),
+            child: Container(
+              margin: EdgeInsets.all(8.w),
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryColor,
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              child: Icon(
+                Icons.tune,
+                color: AppTheme.onPrimary,
+                size: 16.sp,
+              ),
             ),
           ),
           border: InputBorder.none,
@@ -644,5 +647,317 @@ class HomeScreen extends StatelessWidget {
       default:
         return AppTheme.onBackground;
     }
+  }
+
+  void _showFilterBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const FilterBottomSheet(),
+    );
+  }
+}
+
+class FilterBottomSheet extends StatefulWidget {
+  const FilterBottomSheet({super.key});
+
+  @override
+  State<FilterBottomSheet> createState() => _FilterBottomSheetState();
+}
+
+class _FilterBottomSheetState extends State<FilterBottomSheet> {
+  final fieldsController = Get.find<FieldsController>();
+  
+  String selectedLocation = 'All Locations';
+  RangeValues priceRange = const RangeValues(50000, 500000);
+  List<String> selectedTimes = [];
+  
+  final List<String> locations = [
+    'All Locations',
+    'Jakarta Selatan',
+    'Jakarta Utara', 
+    'Jakarta Barat',
+    'Jakarta Timur',
+    'Jakarta Pusat',
+    'Tangerang',
+    'Bekasi',
+    'Depok',
+  ];
+  
+  final List<String> timeSlots = [
+    '06:00 - 09:00',
+    '09:00 - 12:00', 
+    '12:00 - 15:00',
+    '15:00 - 18:00',
+    '18:00 - 21:00',
+    '21:00 - 24:00',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.8,
+      decoration: BoxDecoration(
+        color: AppTheme.backgroundColor,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+      ),
+      child: Column(
+        children: [
+          // Handle
+          Container(
+            width: 40.w,
+            height: 4.h,
+            margin: EdgeInsets.symmetric(vertical: 12.h),
+            decoration: BoxDecoration(
+              color: AppTheme.onBackground.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(2.r),
+            ),
+          ),
+          
+          // Header
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Filter Fields',
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.onBackground,
+                  ),
+                ),
+                TextButton(
+                  onPressed: _resetFilters,
+                  child: Text(
+                    'Reset',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: AppTheme.primaryColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          Divider(color: AppTheme.onBackground.withOpacity(0.1)),
+          
+          // Filter Content
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(24.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildLocationFilter(),
+                  SizedBox(height: 24.h),
+                  _buildPriceFilter(),
+                  SizedBox(height: 24.h),
+                  _buildTimeFilter(),
+                ],
+              ),
+            ),
+          ),
+          
+          // Apply Button
+          Padding(
+            padding: EdgeInsets.all(24.w),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _applyFilters,
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
+                child: Text(
+                  'Apply Filters',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLocationFilter() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Location',
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.onBackground,
+          ),
+        ),
+        SizedBox(height: 12.h),
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+          decoration: BoxDecoration(
+            border: Border.all(color: AppTheme.onBackground.withOpacity(0.2)),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: selectedLocation,
+              isExpanded: true,
+              items: locations.map((String location) {
+                return DropdownMenuItem<String>(
+                  value: location,
+                  child: Text(
+                    location,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: AppTheme.onBackground,
+                    ),
+                  ),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedLocation = newValue!;
+                });
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPriceFilter() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Price Range per Hour',
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.onBackground,
+          ),
+        ),
+        SizedBox(height: 12.h),
+        Text(
+          'Rp ${priceRange.start.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')} - Rp ${priceRange.end.toInt().toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}',
+          style: TextStyle(
+            fontSize: 14.sp,
+            color: AppTheme.primaryColor,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        SizedBox(height: 8.h),
+        RangeSlider(
+          values: priceRange,
+          min: 25000,
+          max: 1000000,
+          divisions: 39,
+          activeColor: AppTheme.primaryColor,
+          inactiveColor: AppTheme.primaryColor.withOpacity(0.3),
+          onChanged: (RangeValues values) {
+            setState(() {
+              priceRange = values;
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTimeFilter() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Available Time Slots',
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.onBackground,
+          ),
+        ),
+        SizedBox(height: 12.h),
+        Wrap(
+          spacing: 8.w,
+          runSpacing: 8.h,
+          children: timeSlots.map((time) {
+            final isSelected = selectedTimes.contains(time);
+            return InkWell(
+              onTap: () {
+                setState(() {
+                  if (isSelected) {
+                    selectedTimes.remove(time);
+                  } else {
+                    selectedTimes.add(time);
+                  }
+                });
+              },
+              borderRadius: BorderRadius.circular(20.r),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                decoration: BoxDecoration(
+                  color: isSelected ? AppTheme.primaryColor : AppTheme.surfaceColor,
+                  borderRadius: BorderRadius.circular(20.r),
+                  border: Border.all(
+                    color: isSelected ? AppTheme.primaryColor : AppTheme.onBackground.withOpacity(0.2),
+                  ),
+                ),
+                child: Text(
+                  time,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: isSelected ? AppTheme.onPrimary : AppTheme.onBackground,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  void _resetFilters() {
+    setState(() {
+      selectedLocation = 'All Locations';
+      priceRange = const RangeValues(50000, 500000);
+      selectedTimes.clear();
+    });
+  }
+
+  void _applyFilters() {
+    fieldsController.applyFilters(
+      location: selectedLocation == 'All Locations' ? null : selectedLocation,
+      minPrice: priceRange.start,
+      maxPrice: priceRange.end,
+      timeSlots: selectedTimes.isEmpty ? null : selectedTimes,
+    );
+    
+    Get.back();
+    
+    Get.snackbar(
+      'Filters Applied',
+      'Found ${fieldsController.filteredFields.length} fields matching your criteria',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: AppTheme.primaryColor,
+      colorText: AppTheme.onPrimary,
+      margin: EdgeInsets.all(16.w),
+      borderRadius: 12.r,
+    );
   }
 }

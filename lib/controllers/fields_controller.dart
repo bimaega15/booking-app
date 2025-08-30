@@ -8,6 +8,12 @@ class FieldsController extends GetxController {
   final RxString _selectedFieldId = ''.obs;
   final RxString _searchQuery = ''.obs;
   final RxString _selectedSportId = ''.obs;
+  
+  // Filter variables
+  final RxString _filterLocation = ''.obs;
+  final RxDouble _filterMinPrice = 0.0.obs;
+  final RxDouble _filterMaxPrice = double.infinity.obs;
+  final RxList<String> _filterTimeSlots = <String>[].obs;
 
   List<Field> get fields => _fields;
   List<Field> get filteredFields => _filteredFields;
@@ -27,6 +33,10 @@ class FieldsController extends GetxController {
     
     ever(_searchQuery, (_) => _filterFields());
     ever(_selectedSportId, (_) => _filterFields());
+    ever(_filterLocation, (_) => _filterFields());
+    ever(_filterMinPrice, (_) => _filterFields());
+    ever(_filterMaxPrice, (_) => _filterFields());
+    ever(_filterTimeSlots, (_) => _filterFields());
   }
 
   Future<void> loadFields() async {
@@ -169,16 +179,55 @@ class FieldsController extends GetxController {
   void _filterFields() {
     List<Field> filtered = _fields;
 
+    // Filter by sport
     if (_selectedSportId.value.isNotEmpty) {
       filtered = filtered.where((field) => field.sportId == _selectedSportId.value).toList();
     }
 
+    // Filter by search query
     if (_searchQuery.value.isNotEmpty) {
       final query = _searchQuery.value.toLowerCase();
       filtered = filtered.where((field) =>
           field.name.toLowerCase().contains(query) ||
           field.location.toLowerCase().contains(query) ||
           field.address.toLowerCase().contains(query)).toList();
+    }
+
+    // Filter by location
+    if (_filterLocation.value.isNotEmpty) {
+      filtered = filtered.where((field) => 
+          field.location.toLowerCase().contains(_filterLocation.value.toLowerCase())).toList();
+    }
+
+    // Filter by price range
+    if (_filterMinPrice.value > 0 || _filterMaxPrice.value < double.infinity) {
+      filtered = filtered.where((field) =>
+          field.pricePerHour >= _filterMinPrice.value &&
+          field.pricePerHour <= _filterMaxPrice.value).toList();
+    }
+
+    // Filter by time slots
+    if (_filterTimeSlots.isNotEmpty) {
+      filtered = filtered.where((field) {
+        for (String timeSlot in _filterTimeSlots) {
+          final times = timeSlot.split(' - ');
+          if (times.length == 2) {
+            final startTime = times[0];
+            final endTime = times[1];
+            
+            // Check if field has availability in this time range
+            bool hasAvailability = false;
+            for (List<String> dayHours in field.availableHours.values) {
+              if (dayHours.contains(startTime) || dayHours.contains(endTime)) {
+                hasAvailability = true;
+                break;
+              }
+            }
+            if (hasAvailability) return true;
+          }
+        }
+        return false;
+      }).toList();
     }
 
     _filteredFields.assignAll(filtered);
@@ -195,6 +244,22 @@ class FieldsController extends GetxController {
   void clearFilters() {
     _searchQuery.value = '';
     _selectedSportId.value = '';
+    _filterLocation.value = '';
+    _filterMinPrice.value = 0.0;
+    _filterMaxPrice.value = double.infinity;
+    _filterTimeSlots.clear();
+  }
+
+  void applyFilters({
+    String? location,
+    double? minPrice,
+    double? maxPrice,
+    List<String>? timeSlots,
+  }) {
+    _filterLocation.value = location ?? '';
+    _filterMinPrice.value = minPrice ?? 0.0;
+    _filterMaxPrice.value = maxPrice ?? double.infinity;
+    _filterTimeSlots.assignAll(timeSlots ?? []);
   }
 
   Future<void> refreshFields() async {
