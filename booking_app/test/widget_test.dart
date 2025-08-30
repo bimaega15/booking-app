@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get/get.dart';
 
 import 'package:booking_app/main.dart';
 
@@ -15,7 +16,12 @@ void main() {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const BookingApp());
 
-    // Verify that the app loads with the main screen
-    expect(find.text('Hello, Sports Lover! 👋'), findsOneWidget);
+    // Verify that the app loads with the splash screen
+    expect(find.text('SportBook'), findsOneWidget);
+    expect(find.text('Book Your Perfect Sports Field'), findsOneWidget);
+    expect(find.text('Loading...'), findsOneWidget);
+    
+    // Clean up GetX controllers to avoid timer issues
+    Get.reset();
   });
 }

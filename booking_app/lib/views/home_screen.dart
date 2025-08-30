@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../controllers/sports_controller.dart';
 import '../controllers/fields_controller.dart';
 import '../controllers/booking_controller.dart';
+import '../models/booking.dart';
 import '../core/theme.dart';
 import 'sports_selection_screen.dart';
 import 'field_detail_screen.dart';
@@ -382,7 +383,7 @@ class HomeScreen extends StatelessWidget {
           final popularFields = controller.fields.take(3).toList();
           
           return Column(
-            children: popularFields.map((field) => _buildFieldCard(field)).toList(),
+            children: popularFields.map<Widget>((field) => _buildFieldCard(field)).toList(),
           );
         }),
       ],
@@ -617,7 +618,7 @@ class HomeScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Text(
-              booking.status.name.toUpperCase(),
+              BookingStatusHelper.getStatusName(booking.status).toUpperCase(),
               style: TextStyle(
                 fontSize: 10.sp,
                 fontWeight: FontWeight.w600,
@@ -630,8 +631,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Color _getStatusColor(status) {
-    switch (status.name) {
+  Color _getStatusColor(BookingStatus status) {
+    switch (BookingStatusHelper.getStatusName(status)) {
       case 'confirmed':
         return AppTheme.primaryColor;
       case 'pending':

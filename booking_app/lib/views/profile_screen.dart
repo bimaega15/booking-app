@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../core/theme.dart';
+import '../controllers/auth_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -86,22 +87,28 @@ class ProfileScreen extends StatelessWidget {
             ],
           ),
           SizedBox(height: 16.h),
-          Text(
-            'Sports Enthusiast',
-            style: TextStyle(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.onBackground,
-            ),
-          ),
+          Obx(() {
+            final authController = Get.find<AuthController>();
+            return Text(
+              authController.currentUser?.name ?? 'Sports Enthusiast',
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.onBackground,
+              ),
+            );
+          }),
           SizedBox(height: 4.h),
-          Text(
-            'user@example.com',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: AppTheme.onBackground.withOpacity(0.6),
-            ),
-          ),
+          Obx(() {
+            final authController = Get.find<AuthController>();
+            return Text(
+              authController.currentUser?.email ?? 'user@example.com',
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: AppTheme.onBackground.withOpacity(0.6),
+              ),
+            );
+          }),
           SizedBox(height: 16.h),
           ElevatedButton(
             onPressed: () {
@@ -360,6 +367,8 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _showLogoutDialog() {
+    final authController = Get.find<AuthController>();
+    
     Get.dialog(
       AlertDialog(
         shape: RoundedRectangleBorder(
@@ -384,25 +393,29 @@ class ProfileScreen extends StatelessWidget {
             onPressed: () => Get.back(),
             child: const Text('Cancel'),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Get.back();
-              Get.snackbar(
-                'Signed Out',
-                'You have been signed out successfully',
-                backgroundColor: AppTheme.primaryColor,
-                colorText: AppTheme.onPrimary,
-                snackPosition: SnackPosition.BOTTOM,
-                margin: EdgeInsets.all(16.w),
-                borderRadius: 12.r,
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Sign Out'),
-          ),
+          Obx(() {
+            final authController = Get.find<AuthController>();
+            return ElevatedButton(
+              onPressed: authController.isLoading ? null : () {
+                Get.back();
+                authController.logout();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: authController.isLoading
+                  ? SizedBox(
+                      width: 16.w,
+                      height: 16.w,
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : const Text('Sign Out'),
+            );
+          }),
         ],
       ),
     );

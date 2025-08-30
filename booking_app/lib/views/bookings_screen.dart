@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../controllers/booking_controller.dart';
 import '../controllers/fields_controller.dart';
+import '../models/booking.dart';
 import '../core/theme.dart';
 
 class BookingsScreen extends StatefulWidget {
@@ -197,7 +198,7 @@ class _BookingsScreenState extends State<BookingsScreen>
                     borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Text(
-                    booking.status.name.toUpperCase(),
+                    BookingStatusHelper.getStatusName(booking.status).toUpperCase(),
                     style: TextStyle(
                       fontSize: 10.sp,
                       fontWeight: FontWeight.bold,
@@ -244,7 +245,7 @@ class _BookingsScreenState extends State<BookingsScreen>
                 ],
               ),
             ),
-            if (showActions && booking.status.name == 'pending') ...[
+            if (showActions && BookingStatusHelper.getStatusName(booking.status) == 'pending') ...[
               SizedBox(height: 16.h),
               Row(
                 children: [
@@ -367,8 +368,8 @@ class _BookingsScreenState extends State<BookingsScreen>
     );
   }
 
-  Color _getStatusColor(status) {
-    switch (status.name) {
+  Color _getStatusColor(BookingStatus status) {
+    switch (BookingStatusHelper.getStatusName(status)) {
       case 'confirmed':
         return AppTheme.primaryColor;
       case 'pending':
@@ -382,8 +383,8 @@ class _BookingsScreenState extends State<BookingsScreen>
     }
   }
 
-  IconData _getStatusIcon(status) {
-    switch (status.name) {
+  IconData _getStatusIcon(BookingStatus status) {
+    switch (BookingStatusHelper.getStatusName(status)) {
       case 'confirmed':
         return Icons.check_circle;
       case 'pending':

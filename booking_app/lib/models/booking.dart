@@ -5,6 +5,21 @@ enum BookingStatus {
   completed,
 }
 
+class BookingStatusHelper {
+  static String getStatusName(BookingStatus status) {
+    switch (status) {
+      case BookingStatus.pending:
+        return 'pending';
+      case BookingStatus.confirmed:
+        return 'confirmed';
+      case BookingStatus.cancelled:
+        return 'cancelled';
+      case BookingStatus.completed:
+        return 'completed';
+    }
+  }
+}
+
 class Booking {
   final String id;
   final String fieldId;
@@ -41,15 +56,28 @@ class Booking {
       startTime: json['startTime'] as String,
       endTime: json['endTime'] as String,
       totalPrice: (json['totalPrice'] as num).toDouble(),
-      status: BookingStatus.values.firstWhere(
-        (e) => e.name == json['status'] as String,
-      ),
+      status: _parseStatus(json['status'] as String),
       notes: json['notes'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: json['updatedAt'] != null
           ? DateTime.parse(json['updatedAt'] as String)
           : null,
     );
+  }
+
+  static BookingStatus _parseStatus(String status) {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return BookingStatus.pending;
+      case 'confirmed':
+        return BookingStatus.confirmed;
+      case 'cancelled':
+        return BookingStatus.cancelled;
+      case 'completed':
+        return BookingStatus.completed;
+      default:
+        return BookingStatus.pending;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -61,7 +89,7 @@ class Booking {
       'startTime': startTime,
       'endTime': endTime,
       'totalPrice': totalPrice,
-      'status': status.name,
+      'status': BookingStatusHelper.getStatusName(status),
       'notes': notes,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),

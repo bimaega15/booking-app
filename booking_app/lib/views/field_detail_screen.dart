@@ -311,23 +311,33 @@ class FieldDetailScreen extends StatelessWidget {
                 color: AppTheme.onBackground,
               ),
             ),
-            Text(
-              ' (${field.reviewCount} reviews)',
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: AppTheme.onBackground.withOpacity(0.6),
+            Flexible(
+              child: Text(
+                ' (${field.reviewCount} reviews)',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppTheme.onBackground.withOpacity(0.6),
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            const Spacer(),
-            TextButton.icon(
-              onPressed: () {
-                // TODO: Show reviews
-              },
-              icon: Icon(
-                Icons.reviews,
-                size: 16.sp,
+            SizedBox(width: 8.w),
+            Flexible(
+              child: TextButton.icon(
+                onPressed: () {
+                  // TODO: Show reviews
+                },
+                icon: Icon(
+                  Icons.reviews,
+                  size: 16.sp,
+                ),
+                label: const Text('Reviews'),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
               ),
-              label: const Text('Reviews'),
             ),
           ],
         ),
@@ -507,7 +517,7 @@ class FieldDetailScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: Column(
-            children: field.availableHours.entries.map((entry) {
+            children: field.availableHours.entries.map<Widget>((entry) {
               final day = entry.key;
               final hours = entry.value;
               
@@ -531,7 +541,7 @@ class FieldDetailScreen extends StatelessWidget {
                       child: Wrap(
                         spacing: 6.w,
                         runSpacing: 6.h,
-                        children: hours.map((hour) => Container(
+                        children: hours.map<Widget>((hour) => Container(
                           padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                           decoration: BoxDecoration(
                             color: AppTheme.backgroundColor,

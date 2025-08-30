@@ -181,7 +181,7 @@ class SportsSelectionScreen extends StatelessWidget {
               Wrap(
                 spacing: 4.w,
                 runSpacing: 4.h,
-                children: sport.tags.take(2).map((tag) => Container(
+                children: sport.tags.take(2).map<Widget>((tag) => Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                   decoration: BoxDecoration(
                     color: isSelected
