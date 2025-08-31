@@ -6,7 +6,9 @@
       "Bash(flutter run:*)",
       "Bash(flutter build:*)",
       "Bash(flutter test:*)",
-      "Bash(flutter clean:*)"
+      "Bash(flutter clean:*)",
+      "Bash(where keytool)",
+      "Bash(flutter doctor:*)"
     ],
     "deny": [],
     "ask": []
